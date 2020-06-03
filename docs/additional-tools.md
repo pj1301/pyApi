@@ -158,6 +158,7 @@ script:
   - docker-compose run app sh -c "python manage.py test && flake8"
 ```
 
+After your first commit to GitHub after activating Travis, you will see that the project will have a new entry.
 
 &nbsp;
 ## PostgreSQL
@@ -177,5 +178,12 @@ The config file for the Flake8 linter should be added inside our docker director
 
 ./app/app/.flake8
 ```
-
+[flake8]
+exclude = 
+  migrations,
+  __pycache__,
+  manage.py,
+  settings.py
 ```
+
+Save and commit the changes.

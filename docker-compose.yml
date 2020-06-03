@@ -1,13 +1,12 @@
-# Contains the configuration for all of the services which make up the project. 
+version: '3'
 
-version: "3"
-
-services: 
-  app: 
+services:
+  app:
     build:
       context: .
     ports:
       - "8000:8000"
-    volumes: 
+    volumes:
       - ./app:/app
-    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"

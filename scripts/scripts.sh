@@ -25,8 +25,12 @@ success() {
 }
 
 fail() {
-  if []
-  echo "\n${RED}Operation failed\n____________________________________________\n${NONE}"
+  if [[ -z "$1" ]]
+    then
+    echo "\n${RED}Operation failed\n____________________________________________\n${NONE}"
+    else
+    echo "\n${RED}$*\n____________________________________________\n${NONE}"
+  fi
   exit 1
 }
 
@@ -36,17 +40,17 @@ echo "${YELLOW}\n____________________________________________\nEntered Command: 
 
 # MANAGE INPUTS ************************************************
 
-if [ $1 == "test" ] && [[ -z $2 ]]
+if [ $1 == "test" ] && [[ -z "$2" ]]
   then
-  docker-compose run app python manage.py test || fail
-  docker-compose run app flake8 || fail("Failed during testing")
+  docker-compose run app python manage.py test || fail "Test(s) failed"
+  # docker-compose run app flake8 --ignore=E111,E501,W391 || fail "Failed during linting"
   success
 fi
 
-if [ $1 == "build" ] && [[ -z $2 ]]
+if [ $1 == "build" ] && [[ -z "$2" ]]
   then
-  docker-compose build  || fail
+  docker-compose build  || fail "Failed during build"
   success
 fi
 
-fail
+fail "Command not recognised"

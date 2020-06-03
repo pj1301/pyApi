@@ -24,34 +24,36 @@ Create a new file in the root of the project and call it `Dockerfile` with no ex
 Inside the file include the following code:
 
 ```docker
-# Import the respective image, format should be `<language>:<tag>` 
+<!--  -->
+
+<!-- Import the respective image, format should be `<language>:<tag>`  -->
 FROM python:3.7-alpine
 
-# is not necessary but keeps a record of who the owner and official maintainer of the project is
+<!-- is not necessary but keeps a record of who the owner and official maintainer of the project is -->
 MAINTAINER pj1301
 
-# Tells Python to run in unbuffered mode which is a recommended setting for Python when running inside Docker containers
+<!-- Tells Python to run in unbuffered mode which is a recommended setting for Python when running inside Docker containers -->
 ENV PYTHONUNBUFFERED 1
 
-# Tell Docker to copy the requirements from the adjactent file ./requirements.txt into a file on the Docker image of the same name
+<!-- Tell Docker to copy the requirements from the adjactent file ./requirements.txt into a file on the Docker image of the same name -->
 COPY ./requirements.txt /requirements.txt
 
-# Install the requirements from the newly created file on the Docker image onto the Docker image
+<!-- Install the requirements from the newly created file on the Docker image onto the Docker image -->
 RUN pip install -r /requirements.txt
 
-# Create an empty folder on our Docker image
+<!-- Create an empty folder on our Docker image -->
 RUN mkdir /app
 
-# Switch the default directory to this new directory on our Docker image (the application will then run from this as the root, unless we specify otherwise later)
+<!-- Switch the default directory to this new directory on our Docker image (the application will then run from this as the root, unless we specify otherwise later) -->
 WORKDIR /app
 
-# Copy code from our app folder into the default directory now on our Docker image; Assumes that app is the working directory inside the development folder, if the directory doesn't match an error will be presented
+<!-- Copy code from our app folder into the default directory now on our Docker image; Assumes that app is the working directory inside the development folder, if the directory doesn't match an error will be presented -->
 COPY ./app /app
 
-# BELOW IS A SECURITY MEASURE - TO PREVENT ROOT ACCESS TO THE DOCKER IMAGE IF THE APPLICATION IS HACKED
-# Create a user, '-D' indicates that this user should only be used to run our project
+<!-- BELOW IS A SECURITY MEASURE - TO PREVENT ROOT ACCESS TO THE DOCKER IMAGE IF THE APPLICATION IS HACKED -->
+<!-- Create a user, '-D' indicates that this user should only be used to run our project -->
 RUN adduser -D user
-# Switches Docker to the newly created user thereby limiting the accessible scope inside our Docker container
+<!-- Switches Docker to the newly created user thereby limiting the accessible scope inside our Docker container -->
 USER user
 ```
 
@@ -62,6 +64,8 @@ The requirements.txt file contains all of the dependencies for our project. In a
 To add a dependency, type the name and then specify the version or range of versions as so:
 
 ```txt
+<!-- ./requirements.txt -->
+
 # Installs latest version before 2.2.0, essentially the latest minor version (no breaking changes)
 Django>=2.1.3,<2.2.0
 ```
@@ -80,6 +84,8 @@ Docker compose is a tool which allows us to run our Docker image from the projec
 
 
 ```yml
+# ./docker-compose.yml
+
 # Version of Docker Compose
 version: "3"
 
@@ -99,6 +105,8 @@ services:
 The command line above is essentially a shell script, `-c` is for command, then the command follows in quotation marks. Note, the server is the actual development server which will be mapped onto the Docker drive. So it could be 2000 and then the ports line would look like this:
 
 ```yml
+# ./docker-compose.yml
+
 ...
 ports:
   - "2000:8000"
@@ -139,6 +147,8 @@ Go to travis-ci.org and sign in using your GitHub account. Once activated, click
 The travis configuration file tells Travis what to do every time we push a change to the activated repository. Create `.travis.yml` in the root directory and add the following:
 
 ```yml
+# ./.travis.yml
+
 # Specify the language
 language: python
 python:
@@ -166,15 +176,17 @@ When running the first time I got an error on line length which caused my tests 
 
 **Change the permitted line length in Flake8**:
 
-./app/app/.flake8
 ```
+<!-- ./app/app/.flake8 -->
+
 [flake8]
 max-line-length = 119
 ```
 
 **Split the strings**:
-./app/app/settings.py
 ```py
+# ./app/app/settings.py
+
 AUTH_PASSWORD_VALIDATORS = [
     {
       'NAME': 'django.contrib.auth.password_validation'
@@ -205,6 +217,8 @@ AUTH_PASSWORD_VALIDATORS = [
 First add Flake8 to the requirements file:
 
 ```txt
+<!-- ./requirements.txt -->
+
 ...
 flake8>=3.6.0,<3.7.0
 ```
@@ -212,8 +226,9 @@ flake8>=3.6.0,<3.7.0
 ### Config
 The config file for the Flake8 linter should be added inside our docker directory.
 
-./app/app/.flake8
 ```
+<!-- ./app/app/.flake8 -->
+
 [flake8]
 exclude = 
   migrations,

@@ -5,8 +5,8 @@
 
 Create a new file in which our function will be executed, let's call it `calc.py`, inside the Docker root file. Then let's add a simple addition function:
 
-./app/app/calc.py
 ```py
+# ./app/app/calc.py
 
 def add(x, y) 
   return x + y
@@ -14,8 +14,9 @@ def add(x, y)
 
 Now create a tests file in the Docker root directory, let's call it `test.py`:
 
-./app/app/tests.py
 ```py
+# ./app/app/tests.py
+
 # Import the TestCase with helper methods from django.test (this is more like Java than JS)
 from django.test import TestCase
 # Import the function to test
@@ -28,3 +29,12 @@ class CalcTests(TestCase):
 ```
 
 > NOTE: When writing tests, the test file, must have test in the name and the functions inside the class must begin with test.
+
+As we are using Docker, the command to run the tests is:
+
+```bash
+docker-compose run app sh -c "python manage.py test"
+
+# You can also execute the linter with:
+# docker-compose run app sh -c "python manage.py test && flake8"
+```

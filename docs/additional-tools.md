@@ -130,6 +130,52 @@ Once this has run, open the app folder in the development root and you will see 
 &nbsp;
 ## Travis CI
 
+&nbsp;
+### Activate Project
+Go to travis-ci.org and sign in using your GitHub account. Once activated, click the + on the right hand side of the page to select one of your repos to be activated. Find the repository you created for this project (it must be public), then click activate repository.
+
+&nbsp;
+### Configure Travis CI
+The travis configuration file tells Travis what to do every time we push a change to the activated repository. Create `.travis.yml` in the root directory and add the following:
+
+```yml
+# Specify the language
+language: python
+python:
+  # specify the version of the language
+    - "3.6"
+
+# Specify the services
+services:
+  - docker
+
+# Before the script is run, do this
+before_script: pip install docker-compose
+
+# Then run the script - note that flake8 is our linter that hasn't been configured yet
+# If this fails, the build will fail and an error will be returned
+script: 
+  - docker-compose run app sh -c "python manage.py test && flake8"
+```
+
 
 &nbsp;
 ## PostgreSQL
+
+
+&nbsp;
+## Flake8
+First add Flake8 to the requirements file:
+
+```txt
+...
+flake8>=3.6.0,<3.7.0
+```
+
+### Config
+The config file for the Flake8 linter should be added inside our docker directory.
+
+./app/app/.flake8
+```
+
+```

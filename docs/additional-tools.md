@@ -161,6 +161,42 @@ script:
 After your first commit to GitHub after activating Travis, you will see that the project will have a new entry.
 
 &nbsp;
+### Errors
+When running the first time I got an error on line length which caused my tests to fail. The issue was inside `settings.py` where the auth password validators were above the permitted line length. Two potential solutions:
+
+**Change the permitted line length in Flake8**:
+
+./app/app/.flake8
+```
+[flake8]
+max-line-length = 119
+```
+
+**Split the strings**:
+./app/app/settings.py
+```py
+AUTH_PASSWORD_VALIDATORS = [
+    {
+      'NAME': 'django.contrib.auth.password_validation'
+              '.UserAttributeSimilarityValidator',
+    },
+    {
+      'NAME': 'django.contrib.auth.password_validation'
+              '.MinimumLengthValidator',
+    },
+    {
+      'NAME': 'django.contrib.auth.password_validation'
+              '.CommonPasswordValidator',
+    },
+    {
+      'NAME': 'django.contrib.auth.password_validation'
+              '.NumericPasswordValidator',
+    },
+]
+```
+>_Note: if following this approach, indentation on the new-line is important._
+
+&nbsp;
 ## PostgreSQL
 
 

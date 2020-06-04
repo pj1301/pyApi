@@ -34,23 +34,31 @@ fail() {
   exit 1
 }
 
+showCommands() {
+  echo "${CYAN}Please enter one of the following commands:"
+  echo ""
+  echo " test"
+  echo " build${NONE}"
+}
+
 # ENTERED COMMAND ************************************************
 echo "${YELLOW}\n____________________________________________\nEntered Command: $*\n____________________________________________\n${NONE}"
 
 
 # MANAGE INPUTS ************************************************
 
-if [ $1 == "test" ] && [[ -z "$2" ]]
+if [ "$1" == "test" ] && [[ -z "$2" ]]
   then
   docker-compose run app python manage.py test || fail "Test(s) failed"
   # docker-compose run app flake8 --ignore=E111,E501,W391 || fail "Failed during linting"
   success
 fi
 
-if [ $1 == "build" ] && [[ -z "$2" ]]
+if [ "$1" == "build" ] && [[ -z "$2" ]]
   then
   docker-compose build  || fail "Failed during build"
   success
 fi
 
+showCommands
 fail "Command not recognised"

@@ -121,3 +121,41 @@ class ModelTests(TestCase):
 ```
 
 When we run the tests, this should now work.
+
+&nbsp;
+#### Creating a Superuser
+> **What is a superuser?**
+> A superuser is a user with high level permissions, which can be created by Django. It is a field on the class instance of user which is included in PermissionsMixin. This is why it is not actually included in the user model.
+
+First let's write the test:
+
+```py
+# ./app/core/tests/tests_models.py
+
+def test_super_user_created(self):
+    # Test creating a new superuser
+    user = get_user_model().objects.create_superuser(
+      'test@test.com',
+      'pass123'
+    )
+    self.assertTrue(user.is_superuser)
+    self.assertTrue(user.is_staff)
+```
+
+Then let's add the method to the user model class:
+
+```py
+# ./app/core/models.py
+
+...
+class UserManager(BaseUserManager):
+  ...
+  def create_superuser(self, email, password):
+    user = self.create_user(email, password)
+    user.is_staff = True
+    user.is_superuser = True
+    user.save(using=self._db)
+    return user
+...
+```
+So we're running thre regular create user command, which will validate the email and we're setting the fields, is_staff and is_superuser to `True`. Then we save to the database.

@@ -38,3 +38,44 @@ docker-compose run app sh -c "python manage.py test"
 # You can also execute the linter with:
 # docker-compose run app sh -c "python manage.py test && flake8"
 ```
+
+&nbsp;
+## Platform Tests
+
+&nbsp;
+### Validate User
+When creating a user with an email address, we are likely to want to ensure that the provided email is valid. Let's write a test to ensure that. First we write a test:
+
+```py
+# ./app/core/test.tests_models.py
+
+...
+class ModelTests(TestCase):
+  ...
+
+  def test_new_user_invalid_email(self):
+    with self.assertRaises(ValueError):
+      get_user_model().objects.create_user(None, 'test123')
+```
+
+What this function does is that it says we expect this test to raise an exception (with ValueError type) when we run the function below to create a user. Notice we are passing None as an email value which we know is not valid. 
+
+Now to make the test pass we need to add the code inside the model file:
+
+```py
+# ./app/core/models.py
+
+...
+class UserManager(BaseUserManager):
+  
+  def create_user(self, email, password=None, **extra_fields)
+    if not email:
+      raise ValueError('Users must have a valid email address')
+    user = self.model(email=self.normalize_email(email), **extra_fields)
+    user.set_password(password)
+    user.save(using=self._db)
+    return user
+  
+  ...
+```
+If you run the test now, it will pass because we have ensured that if `None` is entered as a value for email, the user will not be created.
